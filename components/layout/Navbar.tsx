@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown, MapPin, Calculator } from "lucide-react";
 import Button from "@/components/ui/Button";
 import TripCalculator from "@/components/ui/TripCalculator";
+import AppleIcon from "@/components/ui/AppleIcon";
 
 const NAV_LINKS = [
   { label: "Özellikler", href: "#features" },
@@ -109,7 +110,10 @@ export default function Navbar() {
           <a href="#calculator">
             <Button variant="secondary" size="sm">Maliyet Hesapla</Button>
           </a>
-          <Button variant="primary" size="sm">Erken Erişim Al</Button>
+          <Button variant="primary" size="sm">
+            <AppleIcon className="w-4 h-4" />
+            Yakında
+          </Button>
         </div>
 
         {/* Mobile hamburger */}
@@ -153,7 +157,8 @@ export default function Navbar() {
               </div>
               <div className="flex flex-col gap-2 pt-2">
                 <Button variant="primary" className="w-full">
-                  Erken Erişim Al
+                  <AppleIcon className="w-4 h-4" />
+                  Yakında App Store&apos;da
                 </Button>
                 <a href="#calculator" className="w-full" onClick={() => setMobileOpen(false)}>
                   <Button variant="secondary" className="w-full">

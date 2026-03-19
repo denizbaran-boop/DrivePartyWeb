@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MapPin, Users, Route, Zap, ArrowRight, Bell } from "lucide-react";
+import { MapPin, Users, Route, Zap } from "lucide-react";
 import Button from "@/components/ui/Button";
+import AppleIcon from "@/components/ui/AppleIcon";
 
 const FLOAT_CARDS = [
   {
@@ -121,9 +122,8 @@ export default function Hero() {
               className="flex flex-wrap gap-3 mb-10"
             >
               <Button variant="primary" size="lg">
-                <Bell className="w-5 h-5" />
-                Erken Erişim Al
-                <ArrowRight className="w-5 h-5" />
+                <AppleIcon className="w-5 h-5" />
+                Yakında App Store&apos;da
               </Button>
               <a href="#calculator">
                 <Button variant="secondary" size="lg">

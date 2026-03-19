@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Bell } from "lucide-react";
 import Button from "@/components/ui/Button";
+import AppleIcon from "@/components/ui/AppleIcon";
 
 export default function FinalCTA() {
   return (
@@ -59,9 +59,8 @@ export default function FinalCTA() {
           className="flex flex-wrap gap-4 justify-center"
         >
           <Button variant="primary" size="lg" className="min-w-[200px]">
-            <Bell className="w-5 h-5" />
-            Erken Erişim Al
-            <ArrowRight className="w-5 h-5" />
+            <AppleIcon className="w-5 h-5" />
+            Yakında App Store&apos;da
           </Button>
           <a href="#calculator">
             <Button variant="secondary" size="lg" className="min-w-[200px]">
