@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, Github, Twitter, Instagram } from "lucide-react";
+import { MapPin } from "lucide-react";
 import TripCalculator from "@/components/ui/TripCalculator";
 
 const LINKS = {
@@ -9,12 +9,6 @@ const LINKS = {
     { label: "Nasıl Çalışır", href: "#how-it-works" },
     { label: "Güvenlik", href: "#safety" },
     { label: "SSS", href: "#faq" },
-  ],
-  company: [
-    { label: "Hakkımızda", href: "#" },
-    { label: "Blog", href: "#" },
-    { label: "Kariyer", href: "#" },
-    { label: "İletişim", href: "mailto:contact@minimath.dev" },
   ],
   legal: [
     { label: "Gizlilik Politikası", href: "#" },
@@ -47,7 +41,7 @@ export default function Footer() {
                 kişi başı maliyeti hesapla. Her parti üyesi ne kadar ödeyecek?
               </p>
               <div className="mt-6 space-y-1.5 text-xs text-white/30">
-                <p>· Benzin & dizel: EPDK pompa fiyatı</p>
+                <p>· Benzin &amp; dizel: EPDK pompa fiyatı</p>
                 <p>· Ev şarjı: TEDAŞ tüketici tarifesi</p>
                 <p>· Halka açık: Ortalama Türkiye hızlı şarj</p>
                 <p>· 30 dakikada bir otomatik güncellenir</p>
@@ -64,9 +58,9 @@ export default function Footer() {
 
       {/* Main footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {/* Brand */}
-          <div className="col-span-2">
+          <div>
             <a href="/" className="flex items-center gap-2.5 mb-5 group w-fit">
               <div className="w-9 h-9 rounded-2xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-brand-500/30">
                 <MapPin className="w-4 h-4 text-white" strokeWidth={2.5} />
@@ -75,47 +69,23 @@ export default function Footer() {
                 Drive<span className="text-gradient">Party</span>
               </span>
             </a>
-            <p className="text-sm text-white/35 leading-relaxed max-w-xs mb-6">
-              Sosyal sürüşü yeniden tanımlıyoruz. Arkadaşlarınla birlikte yola çık,
-              güzergahı paylaş, masrafları böl. Çok yakında.
+            <p className="text-sm text-white/35 leading-relaxed mb-6">
+              Sosyal sürüşü yeniden tanımlıyoruz. Arkadaşlarınla birlikte
+              yola çık, güzergahı paylaş, masrafları böl. Çok yakında.
             </p>
-            {/* Socials */}
-            <div className="flex items-center gap-3">
-              {[
-                { Icon: Twitter, href: "#" },
-                { Icon: Instagram, href: "#" },
-                { Icon: Github, href: "#" },
-              ].map(({ Icon, href }, i) => (
-                <a
-                  key={i}
-                  href={href}
-                  className="w-9 h-9 rounded-xl bg-white/5 border border-white/8 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 hover:border-white/15 transition-all"
-                >
-                  <Icon className="w-4 h-4" />
-                </a>
-              ))}
-            </div>
+            <a
+              href="mailto:contact@minimath.dev"
+              className="text-sm text-white/40 hover:text-white/70 transition-colors"
+            >
+              contact@minimath.dev
+            </a>
           </div>
 
           {/* Product */}
           <div>
-            <p className="text-xs font-bold text-white/30 uppercase tracking-wider mb-5">Ürün</p>
-            <ul className="space-y-3">
+            <p className="text-xs font-bold text-white/30 uppercase tracking-wider mb-6">Ürün</p>
+            <ul className="space-y-4">
               {LINKS.product.map((link) => (
-                <li key={link.label}>
-                  <a href={link.href} className="text-sm text-white/50 hover:text-white transition-colors">
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <p className="text-xs font-bold text-white/30 uppercase tracking-wider mb-5">Şirket</p>
-            <ul className="space-y-3">
-              {LINKS.company.map((link) => (
                 <li key={link.label}>
                   <a href={link.href} className="text-sm text-white/50 hover:text-white transition-colors">
                     {link.label}
@@ -127,8 +97,8 @@ export default function Footer() {
 
           {/* Legal */}
           <div>
-            <p className="text-xs font-bold text-white/30 uppercase tracking-wider mb-5">Yasal</p>
-            <ul className="space-y-3">
+            <p className="text-xs font-bold text-white/30 uppercase tracking-wider mb-6">Yasal</p>
+            <ul className="space-y-4">
               {LINKS.legal.map((link) => (
                 <li key={link.label}>
                   <a href={link.href} className="text-sm text-white/50 hover:text-white transition-colors">
@@ -141,7 +111,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-14 pt-6 border-t border-white/6 flex flex-col sm:flex-row items-start justify-between gap-4">
+        <div className="mt-14 pt-6 border-t border-white/6 flex flex-col sm:flex-row items-start justify-between gap-3">
           <div className="space-y-1.5">
             <p className="text-xs text-white/25">
               © {new Date().getFullYear()} Drive Party. Tüm hakları saklıdır.
@@ -149,15 +119,8 @@ export default function Footer() {
             <p className="text-xs text-white/20">
               Websitesi Deniz Baran tarafından yapılmıştır, tüm hakları saklıdır.
             </p>
-            <a
-              href="mailto:contact@minimath.dev"
-              className="text-xs text-white/30 hover:text-white/60 transition-colors"
-            >
-              İletişim: contact@minimath.dev
-            </a>
           </div>
           <p className="text-xs text-white/20 sm:text-right">
-            Türkiye&apos;de tasarlandı 🇹🇷<br />
             Fiyatlar yaklaşık değerdir, güncel bilgi için EPDK&apos;yı kontrol edin.
           </p>
         </div>
