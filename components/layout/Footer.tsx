@@ -14,7 +14,7 @@ const LINKS = {
     { label: "Hakkımızda", href: "#" },
     { label: "Blog", href: "#" },
     { label: "Kariyer", href: "#" },
-    { label: "İletişim", href: "#" },
+    { label: "İletişim", href: "mailto:contact@minimath.dev" },
   ],
   legal: [
     { label: "Gizlilik Politikası", href: "#" },
@@ -76,8 +76,8 @@ export default function Footer() {
               </span>
             </a>
             <p className="text-sm text-white/35 leading-relaxed max-w-xs mb-6">
-              Türkiye&apos;nin sosyal sürüş uygulaması. Arkadaşlarınla birlikte yola çık,
-              güzergahı paylaş, masrafları böl.
+              Sosyal sürüşü yeniden tanımlıyoruz. Arkadaşlarınla birlikte yola çık,
+              güzergahı paylaş, masrafları böl. Çok yakında.
             </p>
             {/* Socials */}
             <div className="flex items-center gap-3">
@@ -141,12 +141,24 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-14 pt-6 border-t border-white/6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-white/25">
-            © {new Date().getFullYear()} Drive Party. Tüm hakları saklıdır.
-          </p>
-          <p className="text-xs text-white/20">
-            Türkiye&apos;de tasarlandı 🇹🇷 · Fiyatlar yaklaşık değerdir, güncel bilgi için EPDK&apos;yı kontrol edin.
+        <div className="mt-14 pt-6 border-t border-white/6 flex flex-col sm:flex-row items-start justify-between gap-4">
+          <div className="space-y-1.5">
+            <p className="text-xs text-white/25">
+              © {new Date().getFullYear()} Drive Party. Tüm hakları saklıdır.
+            </p>
+            <p className="text-xs text-white/20">
+              Websitesi Deniz Baran tarafından yapılmıştır, tüm hakları saklıdır.
+            </p>
+            <a
+              href="mailto:contact@minimath.dev"
+              className="text-xs text-white/30 hover:text-white/60 transition-colors"
+            >
+              İletişim: contact@minimath.dev
+            </a>
+          </div>
+          <p className="text-xs text-white/20 sm:text-right">
+            Türkiye&apos;de tasarlandı 🇹🇷<br />
+            Fiyatlar yaklaşık değerdir, güncel bilgi için EPDK&apos;yı kontrol edin.
           </p>
         </div>
       </div>

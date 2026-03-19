@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, MapPin } from "lucide-react";
+import { ArrowRight, Bell } from "lucide-react";
 import Button from "@/components/ui/Button";
 
 export default function FinalCTA() {
@@ -23,7 +23,7 @@ export default function FinalCTA() {
           className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand-500/30 bg-brand-500/10 text-brand-300 text-sm font-semibold mb-8"
         >
           <div className="w-2 h-2 rounded-full bg-brand-400 animate-pulse" />
-          Uygulamayı Şimdi İndir
+          Çok Yakında Geliyor
         </motion.div>
 
         <motion.h2
@@ -47,8 +47,8 @@ export default function FinalCTA() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="text-lg text-white/45 mb-12 max-w-xl mx-auto leading-relaxed"
         >
-          Drive Party ile her sürüş bir anıya dönüşür. Arkadaşlarını haritada gör,
-          masrafları paylaş, yola birlikte çık.
+          Drive Party geliyor. İlk bilenler arasında ol — erken erişim listesine katıl
+          ve lansman anında haberdar ol.
         </motion.p>
 
         <motion.div
@@ -59,16 +59,18 @@ export default function FinalCTA() {
           className="flex flex-wrap gap-4 justify-center"
         >
           <Button variant="primary" size="lg" className="min-w-[200px]">
-            Uygulamayı İndir
+            <Bell className="w-5 h-5" />
+            Erken Erişim Al
             <ArrowRight className="w-5 h-5" />
           </Button>
-          <Button variant="secondary" size="lg" className="min-w-[200px]">
-            <MapPin className="w-5 h-5" />
-            İlk Partini Başlat
-          </Button>
+          <a href="#calculator">
+            <Button variant="secondary" size="lg" className="min-w-[200px]">
+              Maliyet Hesapla
+            </Button>
+          </a>
         </motion.div>
 
-        {/* App store badges placeholder */}
+        {/* App store coming soon */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -79,11 +81,11 @@ export default function FinalCTA() {
           {["App Store", "Google Play"].map((store) => (
             <div
               key={store}
-              className="flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/8 transition-all cursor-pointer group"
+              className="flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-white/5 border border-white/10 opacity-60 cursor-default select-none"
             >
-              <div className="w-6 h-6 rounded-lg bg-white/20 group-hover:bg-white/30 transition-colors" />
+              <div className="w-6 h-6 rounded-lg bg-white/20" />
               <div className="text-left">
-                <p className="text-[10px] text-white/40">İndir</p>
+                <p className="text-[10px] text-white/40">Yakında</p>
                 <p className="text-sm font-bold text-white leading-none">{store}</p>
               </div>
             </div>

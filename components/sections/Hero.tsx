@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { MapPin, Users, Route, Zap, ArrowRight, Play } from "lucide-react";
+import { MapPin, Users, Route, Zap, ArrowRight, Bell } from "lucide-react";
 import Button from "@/components/ui/Button";
 
 const FLOAT_CARDS = [
@@ -47,10 +47,10 @@ const FLOAT_CARDS = [
   },
 ];
 
-const STATS = [
-  { value: "10K+", label: "Aktif Sürücü" },
-  { value: "50K+", label: "Paylaşılan Rota" },
-  { value: "4.9", label: "App Store Puanı" },
+const PILLARS = [
+  { label: "Gizlilik öncelikli tasarım" },
+  { label: "Gerçek zamanlı parti koordinasyonu" },
+  { label: "Akıllı maliyet paylaşımı" },
 ];
 
 export default function Hero() {
@@ -83,7 +83,7 @@ export default function Hero() {
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand-500/30 bg-brand-500/10 text-brand-300 text-sm font-semibold mb-8"
             >
               <div className="w-2 h-2 rounded-full bg-brand-400 animate-pulse" />
-              Türkiye&apos;nin sosyal sürüş uygulaması
+              Çok Yakında — Bekleme Listesine Katıl
             </motion.div>
 
             {/* Headline */}
@@ -110,7 +110,7 @@ export default function Hero() {
               className="text-lg text-white/50 leading-relaxed mb-10 max-w-lg"
             >
               Arkadaşlarınla parti oluştur, haritada birbirinizi görün, ortak rotayı
-              planlayın ve yol masraflarını adil şekilde paylaşın. Sürüş artık sosyal.
+              planlayın ve yol masraflarını adil şekilde paylaşın. Drive Party çok yakında geliyor.
             </motion.p>
 
             {/* CTAs */}
@@ -118,32 +118,35 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-wrap gap-3 mb-12"
+              className="flex flex-wrap gap-3 mb-10"
             >
               <Button variant="primary" size="lg">
-                Uygulamayı İndir
+                <Bell className="w-5 h-5" />
+                Erken Erişim Al
                 <ArrowRight className="w-5 h-5" />
               </Button>
-              <Button variant="secondary" size="lg">
-                <a href="#calculator" className="flex items-center gap-2">
-                  <Play className="w-4 h-4" />
+              <a href="#calculator">
+                <Button variant="secondary" size="lg">
                   Maliyet Hesapla
-                </a>
-              </Button>
+                </Button>
+              </a>
             </motion.div>
 
-            {/* Stats */}
+            {/* Pre-launch pillars */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="flex items-center gap-8"
+              className="flex flex-wrap items-center gap-3"
             >
-              {STATS.map((stat, i) => (
-                <div key={i} className="text-center">
-                  <p className="text-2xl font-extrabold text-white">{stat.value}</p>
-                  <p className="text-xs text-white/40 font-medium mt-0.5">{stat.label}</p>
-                </div>
+              {PILLARS.map((p, i) => (
+                <span
+                  key={i}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/8 bg-white/4 text-xs font-medium text-white/50"
+                >
+                  <span className="w-1 h-1 rounded-full bg-brand-400 inline-block" />
+                  {p.label}
+                </span>
               ))}
             </motion.div>
           </div>

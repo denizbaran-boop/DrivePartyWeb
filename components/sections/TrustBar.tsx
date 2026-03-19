@@ -2,11 +2,11 @@
 
 import { motion } from "framer-motion";
 
-const STATS = [
-  { value: "10,000+", label: "Aktif Sürücü" },
-  { value: "50,000+", label: "Paylaşılan Rota" },
-  { value: "98%", label: "Memnuniyet Oranı" },
-  { value: "4.9★", label: "Uygulama Puanı" },
+const BENEFITS = [
+  { label: "Sosyal sürüş deneyimi", sub: "Arkadaşlarınla birlikte yola çık" },
+  { label: "Gizlilik öncelikli tasarım", sub: "Konum yalnızca parti üyeleriyle paylaşılır" },
+  { label: "Akıllı maliyet hesabı", sub: "Canlı yakıt fiyatlarıyla anlık hesaplama" },
+  { label: "Gerçek zamanlı koordinasyon", sub: "Haritada birbirinizi görün, birlikte varın" },
 ];
 
 const TAGS = [
@@ -23,19 +23,19 @@ export default function TrustBar() {
   return (
     <section className="py-16 border-y border-white/6 bg-white/2 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        {/* Stats row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
-          {STATS.map((stat, i) => (
+        {/* Product benefit cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+          {BENEFITS.map((b, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
-              className="text-center"
+              transition={{ delay: i * 0.08, duration: 0.5 }}
+              className="px-5 py-4 rounded-2xl border border-white/8 bg-white/4 text-center"
             >
-              <p className="text-3xl font-extrabold text-white mb-1">{stat.value}</p>
-              <p className="text-sm text-white/40 font-medium">{stat.label}</p>
+              <p className="text-sm font-bold text-white mb-1">{b.label}</p>
+              <p className="text-xs text-white/40 leading-snug">{b.sub}</p>
             </motion.div>
           ))}
         </div>

@@ -107,11 +107,9 @@ export default function Navbar() {
         {/* CTAs */}
         <div className="hidden lg:flex items-center gap-2 ml-4 xl:ml-2">
           <a href="#calculator">
-            <Button variant="secondary" size="sm">Hesapla</Button>
+            <Button variant="secondary" size="sm">Maliyet Hesapla</Button>
           </a>
-          <a href="#download">
-            <Button variant="primary" size="sm">Uygulamayı İndir</Button>
-          </a>
+          <Button variant="primary" size="sm">Erken Erişim Al</Button>
         </div>
 
         {/* Mobile hamburger */}
@@ -155,11 +153,13 @@ export default function Navbar() {
               </div>
               <div className="flex flex-col gap-2 pt-2">
                 <Button variant="primary" className="w-full">
-                  Uygulamayı İndir
+                  Erken Erişim Al
                 </Button>
-                <Button variant="secondary" className="w-full">
-                  Parti Başlat
-                </Button>
+                <a href="#calculator" className="w-full" onClick={() => setMobileOpen(false)}>
+                  <Button variant="secondary" className="w-full">
+                    Maliyet Hesapla
+                  </Button>
+                </a>
               </div>
             </div>
           </motion.div>
