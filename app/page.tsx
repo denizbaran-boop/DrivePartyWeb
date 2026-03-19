@@ -10,6 +10,7 @@ import UseCases from "@/components/sections/UseCases";
 import AppPreview from "@/components/sections/AppPreview";
 import FAQ from "@/components/sections/FAQ";
 import FinalCTA from "@/components/sections/FinalCTA";
+import OtherProjects from "@/components/sections/OtherProjects";
 
 export default function Home() {
   return (
@@ -25,6 +26,7 @@ export default function Home() {
         <UseCases />
         <AppPreview />
         <FAQ />
+        <OtherProjects />
         <FinalCTA />
       </main>
       <Footer />
