@@ -1,17 +1,24 @@
 import type { FuelPrices } from "@/types/prices";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// FALLBACK PRICES — updated periodically. Replace with live values as needed.
-// Prices are approximate Turkish pump / utility prices (TL).
+// FALLBACK PRICES — manually updated when live scraping is unavailable.
+// updatedAt is a fixed date (not runtime) so the UI can warn when data is stale.
+// Last manual update: 2026-03-19
 // ─────────────────────────────────────────────────────────────────────────────
 export const FALLBACK_PRICES: FuelPrices = {
-  gasoline: 49.5,          // TL/L  — average Istanbul 95-octane
-  diesel: 46.8,            // TL/L  — average Istanbul diesel
-  electricity_home: 4.2,   // TL/kWh — residential TEDAŞ tariff (avg tier)
-  electricity_public: 11.5, // TL/kWh — public fast-charger estimate (ZES/Eşarj avg)
+  gasoline: 63.5,           // TL/L  — Turkey average 95-octane (March 2026)
+  diesel: 61.2,             // TL/L  — Turkey average diesel (March 2026)
+  electricity_home: 5.8,    // TL/kWh — TEDAŞ residential tariff (2026)
+  electricity_public: 16.5, // TL/kWh — ZES/Eşarj average fast-charger (2026)
   source: "fallback",
-  updatedAt: new Date().toISOString(),
+  updatedAt: "2026-03-19T00:00:00.000Z", // Fixed so UI can show age
   isFallback: true,
+};
+
+// Sanity bounds for live prices (TL). Values outside this range are rejected.
+export const PRICE_BOUNDS = {
+  fuel: { min: 50, max: 120 },   // TL/L
+  elecHome: { min: 3, max: 20 }, // TL/kWh
 };
 
 // Cache duration in milliseconds (30 minutes)
@@ -22,14 +29,11 @@ export const CACHE_TTL_MS = 30 * 60 * 1000;
 // ─────────────────────────────────────────────────────────────────────────────
 export const PRICE_SOURCES = {
   // EPDK official fuel price list (HTML table)
-  // REPLACE selector if EPDK changes their markup
   epdk: "https://www.epdk.gov.tr/Detay/Icerik/3-0-24-14201",
 
-  // Backup: petrol.org.tr scrape
-  // REPLACE selector as needed
-  petrol: "https://www.petrol.org.tr/",
+  // EPDK residential electricity tariff
+  epdkElec: "https://www.epdk.gov.tr/Detay/Icerik/3-0-24-14212",
 
-  // Public EV charging reference (ZES / Eşarj average)
-  // REPLACE with live API if ZES exposes one
-  evPublic: "https://zes.net/tr/fiyatlar",
+  // Backup: petrol.org.tr scrape
+  petrol: "https://www.petrol.org.tr/",
 };

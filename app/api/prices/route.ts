@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import type { FuelPrices } from "@/types/prices";
-import { FALLBACK_PRICES, CACHE_TTL_MS, PRICE_SOURCES } from "@/lib/priceConfig";
+import { FALLBACK_PRICES, CACHE_TTL_MS, PRICE_SOURCES, PRICE_BOUNDS } from "@/lib/priceConfig";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // In-memory cache (survives between requests within the same server process)
@@ -8,69 +8,149 @@ import { FALLBACK_PRICES, CACHE_TTL_MS, PRICE_SOURCES } from "@/lib/priceConfig"
 let cachedPrices: FuelPrices | null = null;
 let cacheTimestamp = 0;
 
+function isValidFuelPrice(v: number): boolean {
+  return !isNaN(v) && v >= PRICE_BOUNDS.fuel.min && v <= PRICE_BOUNDS.fuel.max;
+}
+
+function isValidElecPrice(v: number): boolean {
+  return !isNaN(v) && v >= PRICE_BOUNDS.elecHome.min && v <= PRICE_BOUNDS.elecHome.max;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Attempt to parse fuel prices from EPDK HTML.
 // EPDK publishes a price table at PRICE_SOURCES.epdk.
-// Selector may need updating if their markup changes.
 // ─────────────────────────────────────────────────────────────────────────────
 async function fetchFromEPDK(): Promise<Partial<Pick<FuelPrices, "gasoline" | "diesel">> | null> {
   try {
     const res = await fetch(PRICE_SOURCES.epdk, {
-      next: { revalidate: 0 },
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; DriveParty/1.0)" },
-      signal: AbortSignal.timeout(8000),
+      cache: "no-store",
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "tr-TR,tr;q=0.9,en;q=0.8",
+      },
+      signal: AbortSignal.timeout(10000),
     });
-    if (!res.ok) return null;
+    if (!res.ok) {
+      console.log(`[prices] EPDK returned HTTP ${res.status}`);
+      return null;
+    }
 
     const html = await res.text();
+    console.log(`[prices] EPDK HTML length: ${html.length}`);
 
-    // ── Dynamically import cheerio (server-only) ──────────────────────────
     const { load } = await import("cheerio");
     const $ = load(html);
 
     let gasoline: number | null = null;
     let diesel: number | null = null;
 
-    // EPDK table: look for rows containing "Benzin" / "Motorin"
-    // ADJUST this selector if EPDK changes their markup.
+    // Strategy 1: scan all table rows for keywords + valid price in any cell
     $("table tr").each((_: number, row: unknown) => {
       const cells = $(row as Parameters<typeof $>[0]).find("td");
-      const label = cells.eq(0).text().trim().toLowerCase();
-      const rawPrice = cells.eq(cells.length - 1).text().trim().replace(",", ".");
+      if (cells.length < 2) return;
 
-      if (label.includes("benzin") || label.includes("kurşunsuz")) {
-        const v = parseFloat(rawPrice);
-        if (!isNaN(v) && v > 5) gasoline = v;
-      }
-      if (label.includes("motorin") || label.includes("dizel")) {
-        const v = parseFloat(rawPrice);
-        if (!isNaN(v) && v > 5) diesel = v;
+      const label = cells.eq(0).text().trim().toLowerCase();
+      const isBenzin = label.includes("benzin") || label.includes("kurşunsuz") || label.includes("kursuz");
+      const isDizel = label.includes("motorin") || label.includes("dizel");
+      if (!isBenzin && !isDizel) return;
+
+      // Try each cell from right-to-left to find a plausible price
+      for (let i = cells.length - 1; i >= 1; i--) {
+        const raw = cells.eq(i).text().trim().replace(",", ".").replace(/[^0-9.]/g, "");
+        const v = parseFloat(raw);
+        if (isValidFuelPrice(v)) {
+          if (isBenzin && !gasoline) gasoline = v;
+          if (isDizel && !diesel) diesel = v;
+          break;
+        }
       }
     });
 
+    // Strategy 2: scan for any text node that looks like "Benzin ... XX,XX TL"
+    if (!gasoline || !diesel) {
+      const bodyText = $("body").text();
+      const benzinMatch = bodyText.match(/benzin[^\d]*([\d]{2}[,.][\d]{1,3})/i);
+      const dizelMatch = bodyText.match(/motorin[^\d]*([\d]{2}[,.][\d]{1,3})/i);
+      if (benzinMatch && !gasoline) {
+        const v = parseFloat(benzinMatch[1].replace(",", "."));
+        if (isValidFuelPrice(v)) gasoline = v;
+      }
+      if (dizelMatch && !diesel) {
+        const v = parseFloat(dizelMatch[1].replace(",", "."));
+        if (isValidFuelPrice(v)) diesel = v;
+      }
+    }
+
+    console.log(`[prices] EPDK parsed → gasoline: ${gasoline}, diesel: ${diesel}`);
     if (gasoline && diesel) return { gasoline, diesel };
     return null;
-  } catch {
+  } catch (err) {
+    console.log(`[prices] EPDK fetch error: ${err}`);
+    return null;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Backup: attempt to parse fuel prices from petrol.org.tr
+// ─────────────────────────────────────────────────────────────────────────────
+async function fetchFromPetrolOrg(): Promise<Partial<Pick<FuelPrices, "gasoline" | "diesel">> | null> {
+  try {
+    const res = await fetch(PRICE_SOURCES.petrol, {
+      cache: "no-store",
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "Accept-Language": "tr-TR,tr;q=0.9",
+      },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!res.ok) return null;
+
+    const html = await res.text();
+    const { load } = await import("cheerio");
+    const $ = load(html);
+
+    let gasoline: number | null = null;
+    let diesel: number | null = null;
+
+    $("table tr, .price-row, [class*=price], [class*=yakit]").each((_: number, el: unknown) => {
+      const text = $(el as Parameters<typeof $>[0]).text().toLowerCase();
+      const isBenzin = text.includes("benzin") || text.includes("kurşunsuz");
+      const isDizel = text.includes("motorin") || text.includes("dizel");
+      if (!isBenzin && !isDizel) return;
+
+      const matches = text.match(/[\d]{2,3}[,.][\d]{1,3}/g) || [];
+      for (const m of matches) {
+        const v = parseFloat(m.replace(",", "."));
+        if (isValidFuelPrice(v)) {
+          if (isBenzin && !gasoline) gasoline = v;
+          if (isDizel && !diesel) diesel = v;
+        }
+      }
+    });
+
+    console.log(`[prices] petrol.org.tr parsed → gasoline: ${gasoline}, diesel: ${diesel}`);
+    if (gasoline && diesel) return { gasoline, diesel };
+    return null;
+  } catch (err) {
+    console.log(`[prices] petrol.org.tr error: ${err}`);
     return null;
   }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Attempt to fetch residential electricity price from EPDK / TEDAŞ.
-// Turkey residential electricity tariff changes quarterly.
-// REPLACE URL/selector as needed.
 // ─────────────────────────────────────────────────────────────────────────────
 async function fetchElectricityHomePrice(): Promise<number | null> {
   try {
-    // EPDK electricity tariff page — adjust selector if markup changes
-    const res = await fetch(
-      "https://www.epdk.gov.tr/Detay/Icerik/3-0-24-14212",
-      {
-        next: { revalidate: 0 },
-        headers: { "User-Agent": "Mozilla/5.0 (compatible; DriveParty/1.0)" },
-        signal: AbortSignal.timeout(8000),
-      }
-    );
+    const res = await fetch(PRICE_SOURCES.epdkElec, {
+      cache: "no-store",
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "Accept-Language": "tr-TR,tr;q=0.9",
+      },
+      signal: AbortSignal.timeout(10000),
+    });
     if (!res.ok) return null;
 
     const html = await res.text();
@@ -82,30 +162,16 @@ async function fetchElectricityHomePrice(): Promise<number | null> {
       const cells = $(row as Parameters<typeof $>[0]).find("td");
       const label = cells.eq(0).text().trim().toLowerCase();
       if (label.includes("konut") || label.includes("mesken")) {
-        const raw = cells.eq(cells.length - 1).text().trim().replace(",", ".");
-        const v = parseFloat(raw);
-        if (!isNaN(v) && v > 0.5) price = v;
+        for (let i = cells.length - 1; i >= 1; i--) {
+          const raw = cells.eq(i).text().trim().replace(",", ".").replace(/[^0-9.]/g, "");
+          const v = parseFloat(raw);
+          if (isValidElecPrice(v)) { price = v; break; }
+        }
       }
     });
 
+    console.log(`[prices] EPDK electricity parsed → home: ${price}`);
     return price;
-  } catch {
-    return null;
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Fetch public EV charging price.
-// Currently uses a hardcoded reasonable estimate since providers (ZES, Eşarj,
-// Voltrun) do not expose a public JSON API.
-// REPLACE this function body with a real API call when available.
-// ─────────────────────────────────────────────────────────────────────────────
-async function fetchPublicEVPrice(): Promise<number | null> {
-  try {
-    // TODO: Replace with real API endpoint from ZES / Eşarj / Voltrun
-    // Example: const res = await fetch("https://api.zes.net/v1/prices?city=istanbul")
-    // For now we return null to trigger fallback to a realistic hardcoded value
-    return null;
   } catch {
     return null;
   }
@@ -114,37 +180,48 @@ async function fetchPublicEVPrice(): Promise<number | null> {
 // ─────────────────────────────────────────────────────────────────────────────
 // Main price resolver — tries live sources, falls back gracefully
 // ─────────────────────────────────────────────────────────────────────────────
-async function resolvePrices(): Promise<FuelPrices> {
-  // Check cache
-  if (cachedPrices && Date.now() - cacheTimestamp < CACHE_TTL_MS) {
+async function resolvePrices(bust = false): Promise<FuelPrices> {
+  // Check cache (skip if bust=true)
+  if (!bust && cachedPrices && Date.now() - cacheTimestamp < CACHE_TTL_MS) {
+    console.log("[prices] Serving from cache");
     return cachedPrices;
   }
 
-  const [fuelData, homeElec, publicEV] = await Promise.allSettled([
-    fetchFromEPDK(),
-    fetchElectricityHomePrice(),
-    fetchPublicEVPrice(),
-  ]);
+  console.log("[prices] Fetching fresh prices...");
 
-  const fuel = fuelData.status === "fulfilled" ? fuelData.value : null;
-  const home = homeElec.status === "fulfilled" ? homeElec.value : null;
-  const pub = publicEV.status === "fulfilled" ? publicEV.value : null;
+  // Try EPDK first, then petrol.org.tr as backup
+  let fuel = await fetchFromEPDK();
+  let fuelSource = "epdk.gov.tr";
+
+  if (!fuel) {
+    console.log("[prices] EPDK failed, trying petrol.org.tr backup...");
+    fuel = await fetchFromPetrolOrg();
+    fuelSource = "petrol.org.tr";
+  }
+
+  const home = await fetchElectricityHomePrice();
 
   const isFallback = !fuel;
-  const publicFallback = pub === null;
+
+  if (isFallback) {
+    console.log("[prices] All live sources failed — using fallback prices");
+    fuelSource = "fallback";
+  }
 
   const prices: FuelPrices = {
     gasoline: fuel?.gasoline ?? FALLBACK_PRICES.gasoline,
     diesel: fuel?.diesel ?? FALLBACK_PRICES.diesel,
     electricity_home: home ?? FALLBACK_PRICES.electricity_home,
-    electricity_public: pub ?? FALLBACK_PRICES.electricity_public,
-    source: isFallback ? "fallback" : "epdk.gov.tr",
+    electricity_public: FALLBACK_PRICES.electricity_public, // no live API yet
+    source: isFallback ? "fallback" : fuelSource,
     updatedAt: new Date().toISOString(),
     isFallback,
-    publicFallback,
+    publicFallback: true,
   };
 
-  // Cache result
+  console.log(`[prices] Final → source: ${prices.source}, diesel: ${prices.diesel}, gasoline: ${prices.gasoline}`);
+
+  // Cache result (even fallback, to avoid hammering dead endpoints)
   cachedPrices = prices;
   cacheTimestamp = Date.now();
 
@@ -152,20 +229,23 @@ async function resolvePrices(): Promise<FuelPrices> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GET /api/prices
+// GET /api/prices?bust=1 (bust=1 bypasses cache)
 // ─────────────────────────────────────────────────────────────────────────────
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const prices = await resolvePrices();
+    const bust = req.nextUrl.searchParams.get("bust") === "1";
+    const prices = await resolvePrices(bust);
+
     return NextResponse.json(prices, {
       headers: {
-        "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=3600",
+        // Do not cache at CDN level — prices should always be fresh from the server
+        "Cache-Control": "no-store",
       },
     });
   } catch {
     return NextResponse.json(
       { ...FALLBACK_PRICES, isFallback: true },
-      { status: 200 }
+      { status: 200, headers: { "Cache-Control": "no-store" } }
     );
   }
 }

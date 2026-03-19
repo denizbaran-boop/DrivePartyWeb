@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { Zap, Fuel, AlertCircle, RefreshCw, Users } from "lucide-react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { Zap, Fuel, AlertCircle, RefreshCw, Users, MapPin } from "lucide-react";
 import type { FuelPrices, FuelType, ElectricMode } from "@/types/prices";
 import { FALLBACK_PRICES } from "@/lib/priceConfig";
 import { clsx } from "clsx";
@@ -34,10 +34,37 @@ function formatTimestamp(iso: string): string {
   }
 }
 
+// Reverse geocode coordinates to a Turkish city name using Nominatim
+async function getCityFromCoords(lat: number, lon: number): Promise<string | null> {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=tr`,
+      {
+        headers: { "User-Agent": "DriveParty/1.0 (driveparty.app)" },
+        signal: AbortSignal.timeout(5000),
+      }
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    return (
+      data?.address?.city ||
+      data?.address?.town ||
+      data?.address?.province ||
+      data?.address?.state ||
+      null
+    );
+  } catch {
+    return null;
+  }
+}
+
 export default function TripCalculator({ compact = false, className }: TripCalculatorProps) {
   const [prices, setPrices] = useState<FuelPrices | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [city, setCity] = useState<string | null>(null);
+  const [locating, setLocating] = useState(false);
+  const locationAttempted = useRef(false);
 
   // Inputs
   const [distance, setDistance] = useState<string>("100");
@@ -46,12 +73,13 @@ export default function TripCalculator({ compact = false, className }: TripCalcu
   const [electricMode, setElectricMode] = useState<ElectricMode>("home");
   const [people, setPeople] = useState<string>("2");
 
-  // Fetch prices
-  const fetchPrices = useCallback(async () => {
+  // Fetch prices — pass bust=true to bypass server cache on manual refresh
+  const fetchPrices = useCallback(async (bust = false) => {
     setLoading(true);
     setError(false);
     try {
-      const res = await fetch("/api/prices");
+      const url = bust ? "/api/prices?bust=1" : "/api/prices";
+      const res = await fetch(url, { cache: "no-store" });
       if (!res.ok) throw new Error("fetch failed");
       const data: FuelPrices = await res.json();
       setPrices(data);
@@ -66,6 +94,27 @@ export default function TripCalculator({ compact = false, className }: TripCalcu
   useEffect(() => {
     fetchPrices();
   }, [fetchPrices]);
+
+  // Request geolocation once after prices load
+  useEffect(() => {
+    if (loading || locationAttempted.current || compact) return;
+    locationAttempted.current = true;
+
+    if (!navigator.geolocation) return;
+    setLocating(true);
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const name = await getCityFromCoords(pos.coords.latitude, pos.coords.longitude);
+        setCity(name);
+        setLocating(false);
+      },
+      () => {
+        setLocating(false); // silently ignore permission denial
+      },
+      { timeout: 10000, maximumAge: 5 * 60 * 1000 }
+    );
+  }, [loading, compact]);
 
   // Derived calculations
   const unitPrice = (() => {
@@ -170,42 +219,66 @@ export default function TripCalculator({ compact = false, className }: TripCalcu
     );
   }
 
+  // ── Status bar helpers ───────────────────────────────────────────────────
+  const isLive = !prices?.isFallback;
+  const locationLabel = city
+    ? `${city} için güncel fiyatlar`
+    : locating
+    ? "Konum alınıyor..."
+    : "Türkiye ortalaması";
+
   // Full calculator
   return (
     <div className={cn("space-y-5", className)}>
       {/* Status bar */}
       <div className="flex items-center justify-between text-xs text-white/40">
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1.5 flex-wrap">
           {error ? (
             <>
-              <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
-              <span className="text-amber-400/80">Yedek fiyatlar kullanılıyor</span>
+              <AlertCircle className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+              <span className="text-amber-400/80">Yedek fiyatlar kullanılıyor — veriler güncel olmayabilir</span>
             </>
           ) : loading ? (
             <>
-              <RefreshCw className="w-3.5 h-3.5 animate-spin text-brand-400" />
+              <RefreshCw className="w-3.5 h-3.5 animate-spin text-brand-400 flex-shrink-0" />
               <span>Fiyatlar yükleniyor...</span>
             </>
           ) : (
             <>
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <div
+                className={cn(
+                  "w-1.5 h-1.5 rounded-full flex-shrink-0",
+                  isLive ? "bg-emerald-400 animate-pulse" : "bg-amber-400"
+                )}
+              />
               <span>
-                Canlı fiyatlar •{" "}
-                {prices?.isFallback ? "Yedek" : prices?.source} •{" "}
-                {prices?.updatedAt ? formatTimestamp(prices.updatedAt) : "—"}
+                {isLive ? "Canlı fiyatlar" : "Yedek fiyatlar"}{" "}
+                •{" "}
+                {isLive ? prices?.source : "veriler güncel olmayabilir"}{" "}
+                •{" "}
+                Son güncelleme: {prices?.updatedAt ? formatTimestamp(prices.updatedAt) : "—"}
               </span>
             </>
           )}
         </div>
         <button
-          onClick={fetchPrices}
-          className="flex items-center gap-1 hover:text-white/70 transition-colors"
+          onClick={() => fetchPrices(true)}
+          disabled={loading}
+          className="flex items-center gap-1 hover:text-white/70 transition-colors disabled:opacity-40 flex-shrink-0 ml-2"
           title="Fiyatları güncelle"
         >
-          <RefreshCw className="w-3.5 h-3.5" />
+          <RefreshCw className={cn("w-3.5 h-3.5", loading && "animate-spin")} />
           <span>Güncelle</span>
         </button>
       </div>
+
+      {/* Location badge */}
+      {!loading && (
+        <div className="flex items-center gap-1.5 text-xs text-white/30">
+          <MapPin className="w-3 h-3 flex-shrink-0" />
+          <span>{locationLabel}</span>
+        </div>
+      )}
 
       {/* Inputs grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

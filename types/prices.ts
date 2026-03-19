@@ -7,6 +7,7 @@ export interface FuelPrices {
   updatedAt: string;
   isFallback?: boolean;
   publicFallback?: boolean;
+  city?: string;
 }
 
 export type FuelType = "benzin" | "dizel" | "elektrik";
