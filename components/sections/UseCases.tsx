@@ -17,9 +17,9 @@ const USE_CASES = [
   {
     icon: GraduationCap,
     emoji: "🎓",
-    title: "Kampüs Paylaşımı",
-    desc: "Aynı güzergâhtaki arkadaşlarla yakıt masrafını böl, trafik stresini azalt.",
-    tags: ["Kampüs", "Yakıt Tasarrufu", "Günlük"],
+    title: "Kampüs Konvoyu",
+    desc: "Aynı güzergâhtaki arkadaşlarla haritada birlikte ilerle, kampüse koordineli ulaş.",
+    tags: ["Kampüs", "Konvoy", "Günlük"],
     gradient: "from-emerald-600/20 to-teal-600/20",
     border: "border-emerald-500/25",
   },
@@ -71,7 +71,7 @@ export default function UseCases() {
             <span className="text-gradient"> mükemmel uyum.</span>
           </h2>
           <p className="text-lg text-white/40 max-w-xl mx-auto">
-            Gece çıkışından kampüs paylaşımına, yol gezisinden festival konvoyuna — Drive Party her senaryoya uyar.
+            Gece çıkışından kampüs konvoyuna, yol gezisinden festival sürüşüne — Drive Party her senaryoya uyar.
           </p>
         </motion.div>
 

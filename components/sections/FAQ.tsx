@@ -7,19 +7,19 @@ import { ChevronDown } from "lucide-react";
 const FAQS = [
   {
     q: "Drive Party nedir?",
-    a: "Drive Party, arkadaşlarınızla grup sürüşleri organize etmenizi sağlayan sosyal bir sürüş uygulamasıdır. Parti oluşturabilir, üyeleri haritada takip edebilir, ortak rota planlayabilir ve yolculuk masraflarını paylaşabilirsiniz.",
+    a: "Drive Party, arkadaşlarınızla grup sürüşleri organize etmenizi sağlayan sosyal bir sürüş uygulamasıdır. Parti oluşturabilir, üyeleri haritada takip edebilir ve ortak rotada birlikte ilerleyebilirsiniz. Herkes kendi aracını sürer, ama hepiniz senkronize yolculuk yaparsınız.",
   },
   {
     q: "Yolculuk maliyet hesaplayıcısı nasıl çalışır?",
-    a: "Hesaplayıcı, Türkiye'deki güncel benzin, dizel ve elektrik fiyatlarını otomatik olarak çekerek 'mesafe × tüketim × birim fiyat' formülüyle toplam maliyeti hesaplar. Kişi sayısı girdiğinizde kişi başı maliyet de anında gösterilir.",
+    a: "Hesaplayıcı, Türkiye'deki güncel benzin, dizel ve elektrik fiyatlarını otomatik olarak çekerek 'mesafe × tüketim × birim fiyat' formülüyle tahmini toplam maliyeti hesaplar. Yola çıkmadan önce rotanın ne kadara mal olacağını önceden görebilirsiniz.",
   },
   {
     q: "Kullanılan fiyatlar nereden geliyor?",
     a: "Benzin ve dizel fiyatları EPDK (Enerji Piyasası Düzenleme Kurumu) verilerinden otomatik güncellenir. Elektrik fiyatları için ev şarjında TEDAŞ tarifesi, halka açık şarjda Türkiye'deki şarj ağlarının ortalama fiyatları kullanılır.",
   },
   {
-    q: "Yolculuk masraflarını arkadaşlarımla paylaşabilir miyim?",
-    a: "Evet. Hesaplayıcıya kişi sayısı girdiğinizde kişi başı düşen maliyet otomatik hesaplanır. Uygulama içinde bu değeri doğrudan parti üyelerinizle paylaşabilirsiniz.",
+    q: "Hesaplayıcı ne için kullanılır?",
+    a: "Hesaplayıcı kişisel bir planlama aracıdır. Yola çıkmadan önce yaklaşık yakıt maliyetini görmek, araç tüketimine göre bütçe planlamak ve farklı yakıt türlerini karşılaştırmak için kullanabilirsiniz.",
   },
   {
     q: "Elektrikli araç desteği var mı?",

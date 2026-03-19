@@ -32,7 +32,7 @@ const STEPS = [
     icon: Play,
     step: "04",
     title: "Birlikte Var Ol",
-    desc: "Yol boyunca anlık konumları görün, masrafları paylaşın, sosyal sürüşün keyfini çıkarın.",
+    desc: "Yol boyunca anlık konumları görün, ortak rotada ilerleyin ve sosyal sürüşün keyfini çıkarın.",
     color: "from-amber-500 to-orange-600",
     glow: "shadow-amber-500/30",
   },

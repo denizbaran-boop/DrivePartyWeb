@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Zap, Fuel, AlertCircle, RefreshCw, Users } from "lucide-react";
+import { Zap, Fuel, AlertCircle, RefreshCw } from "lucide-react";
 import type { FuelPrices, FuelType, ElectricMode } from "@/types/prices";
 import { FALLBACK_PRICES } from "@/lib/priceConfig";
 import { clsx } from "clsx";
@@ -44,8 +44,6 @@ export default function TripCalculator({ compact = false, className }: TripCalcu
   const [consumption, setConsumption] = useState<string>("8");
   const [fuelType, setFuelType] = useState<FuelType>("benzin");
   const [electricMode, setElectricMode] = useState<ElectricMode>("home");
-  const [people, setPeople] = useState<string>("2");
-
   // Fetch prices
   const fetchPrices = useCallback(async () => {
     setLoading(true);
@@ -77,10 +75,8 @@ export default function TripCalculator({ compact = false, className }: TripCalcu
 
   const dist = parseFloat(distance) || 0;
   const cons = parseFloat(consumption) || 0;
-  const ppl = Math.max(1, parseInt(people) || 1);
 
   const tripCost = (dist / 100) * cons * unitPrice;
-  const splitCost = tripCost / ppl;
 
   const unit = fuelType === "elektrik" ? "kWh/100 km" : "L/100 km";
   const unitLabel = fuelType === "elektrik" ? "TL/kWh" : "TL/L";
@@ -259,98 +255,41 @@ export default function TripCalculator({ compact = false, className }: TripCalcu
           </div>
         </div>
 
-        {/* Electric mode or People */}
-        <div>
-          {fuelType === "elektrik" ? (
-            <>
-              <label className={labelClass}>Şarj Noktası</label>
-              <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-white/5 border border-white/10">
-                {([
-                  { value: "home", label: "Evde Şarj" },
-                  { value: "public", label: "Halka Açık" },
-                ] as { value: ElectricMode; label: string }[]).map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => setElectricMode(opt.value)}
-                    className={cn(
-                      "py-1.5 rounded-lg text-sm font-semibold transition-all duration-150",
-                      electricMode === opt.value
-                        ? "bg-brand-600 text-white shadow-sm"
-                        : "text-white/50 hover:text-white/80"
-                    )}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-              {prices?.publicFallback && fuelType === "elektrik" && electricMode === "public" && (
-                <p className="mt-1.5 text-xs text-amber-400/70 flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                  Halka açık fiyat alınamadı, yaklaşık değer kullanılıyor
-                </p>
-              )}
-            </>
-          ) : (
-            <>
-              <label className={labelClass}>Kişi Sayısı (paylaşım)</label>
-              <div className="flex items-center gap-2">
+        {/* Electric mode */}
+        {fuelType === "elektrik" && (
+          <div>
+            <label className={labelClass}>Şarj Noktası</label>
+            <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-white/5 border border-white/10">
+              {([
+                { value: "home", label: "Evde Şarj" },
+                { value: "public", label: "Halka Açık" },
+              ] as { value: ElectricMode; label: string }[]).map((opt) => (
                 <button
-                  onClick={() => setPeople((p) => String(Math.max(1, parseInt(p) - 1)))}
-                  className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 flex items-center justify-center text-lg font-bold transition-all"
+                  key={opt.value}
+                  onClick={() => setElectricMode(opt.value)}
+                  className={cn(
+                    "py-1.5 rounded-lg text-sm font-semibold transition-all duration-150",
+                    electricMode === opt.value
+                      ? "bg-brand-600 text-white shadow-sm"
+                      : "text-white/50 hover:text-white/80"
+                  )}
                 >
-                  −
+                  {opt.label}
                 </button>
-                <input
-                  type="number"
-                  min="1"
-                  max="20"
-                  value={people}
-                  onChange={(e) => setPeople(e.target.value)}
-                  className={cn(inputClass, "text-center flex-1")}
-                />
-                <button
-                  onClick={() => setPeople((p) => String(Math.min(20, parseInt(p) + 1)))}
-                  className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 flex items-center justify-center text-lg font-bold transition-all"
-                >
-                  +
-                </button>
-              </div>
-            </>
-          )}
-        </div>
+              ))}
+            </div>
+            {prices?.publicFallback && fuelType === "elektrik" && electricMode === "public" && (
+              <p className="mt-1.5 text-xs text-amber-400/70 flex items-center gap-1">
+                <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                Halka açık fiyat alınamadı, yaklaşık değer kullanılıyor
+              </p>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* For elektrik, also show people */}
-      {fuelType === "elektrik" && (
-        <div>
-          <label className={labelClass}>Kişi Sayısı (paylaşım)</label>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setPeople((p) => String(Math.max(1, parseInt(p) - 1)))}
-              className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 flex items-center justify-center text-lg font-bold transition-all"
-            >
-              −
-            </button>
-            <input
-              type="number"
-              min="1"
-              max="20"
-              value={people}
-              onChange={(e) => setPeople(e.target.value)}
-              className={cn(inputClass, "text-center flex-1")}
-            />
-            <button
-              onClick={() => setPeople((p) => String(Math.min(20, parseInt(p) + 1)))}
-              className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10 flex items-center justify-center text-lg font-bold transition-all"
-            >
-              +
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Results */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
         {/* Unit price */}
         <div className="rounded-2xl p-4 bg-white/5 border border-white/10">
           <div className="flex items-center gap-2 mb-2">
@@ -373,22 +312,10 @@ export default function TripCalculator({ compact = false, className }: TripCalcu
             <div className="w-4 h-4 rounded-full bg-brand-500/50 flex items-center justify-center">
               <div className="w-2 h-2 rounded-full bg-brand-400" />
             </div>
-            <span className="text-xs text-white/40 font-medium">Toplam Maliyet</span>
+            <span className="text-xs text-white/40 font-medium">Tahmini Toplam Maliyet</span>
           </div>
           <p className="text-2xl font-bold text-brand-300">
             {loading ? "..." : formatTL(tripCost)}
-            <span className="text-sm font-normal text-white/40 ml-1">TL</span>
-          </p>
-        </div>
-
-        {/* Per person */}
-        <div className="rounded-2xl p-4 bg-white/5 border border-white/10">
-          <div className="flex items-center gap-2 mb-2">
-            <Users className="w-4 h-4 text-emerald-400" />
-            <span className="text-xs text-white/40 font-medium">Kişi Başı ({ppl} kişi)</span>
-          </div>
-          <p className="text-xl font-bold text-emerald-300">
-            {loading ? "..." : formatTL(splitCost)}
             <span className="text-sm font-normal text-white/40 ml-1">TL</span>
           </p>
         </div>

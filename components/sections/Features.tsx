@@ -37,8 +37,8 @@ const FEATURES = [
   },
   {
     icon: Wallet,
-    title: "Maliyet Paylaşımı",
-    desc: "Yakıt ve yol masraflarını parti üyeleri arasında otomatik böl.",
+    title: "Sürüş Maliyet Tahmini",
+    desc: "Rotanı planlarken yaklaşık yakıt maliyetini önceden hesapla. Sürpriz olmadan yola çık.",
     color: "text-blue-400",
     bg: "bg-blue-500/10",
     border: "border-blue-500/20",

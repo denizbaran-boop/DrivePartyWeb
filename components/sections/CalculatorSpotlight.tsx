@@ -33,7 +33,7 @@ export default function CalculatorSpotlight() {
           </h2>
           <p className="text-lg text-white/40 max-w-2xl mx-auto leading-relaxed">
             Benzin, dizel ya da elektrikli — Türkiye&apos;nin güncel pompa ve tarife fiyatlarıyla
-            anında hesapla. Arkadaşlarınla kişi başı payı gör.
+            rotanın tahmini maliyetini anında gör. Yola çıkmadan önce planla.
           </p>
         </motion.div>
 
@@ -82,8 +82,8 @@ export default function CalculatorSpotlight() {
               desc: "Ev şarjı ve halka açık şarj istasyonu fiyatları",
             },
             {
-              title: "Paylaşım Hesabı",
-              desc: "Parti üyeleri arasında eşit maliyet dağılımı",
+              title: "Tahmini Hesaplama",
+              desc: "Yaklaşık rota maliyetini önceden gör",
             },
           ].map((item, i) => (
             <div key={i} className="text-center p-4 rounded-2xl bg-white/3 border border-white/6">

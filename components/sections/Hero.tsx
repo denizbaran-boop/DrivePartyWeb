@@ -38,8 +38,8 @@ const FLOAT_CARDS = [
   },
   {
     icon: Zap,
-    label: "Maliyet Paylaş",
-    sub: "Yakıt masrafını böl",
+    label: "Tahmini Maliyet",
+    sub: "Rotanı planlamadan önce gör",
     color: "from-amber-600/20 to-orange-600/20",
     border: "border-amber-500/25",
     iconColor: "text-amber-400",
@@ -51,7 +51,7 @@ const FLOAT_CARDS = [
 const PILLARS = [
   { label: "Gizlilik öncelikli tasarım" },
   { label: "Gerçek zamanlı parti koordinasyonu" },
-  { label: "Akıllı maliyet paylaşımı" },
+  { label: "Rota bazlı maliyet tahmini" },
 ];
 
 export default function Hero() {
@@ -110,8 +110,8 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-lg text-white/50 leading-relaxed mb-10 max-w-lg"
             >
-              Arkadaşlarınla parti oluştur, haritada birbirinizi görün, ortak rotayı
-              planlayın ve yol masraflarını adil şekilde paylaşın. Drive Party çok yakında geliyor.
+              Arkadaşlarınla parti oluştur, haritada birbirinizi görün ve ortak rotada
+              birlikte ilerleyin. Drive Party çok yakında geliyor.
             </motion.p>
 
             {/* CTAs */}

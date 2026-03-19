@@ -38,7 +38,7 @@ export default function Footer() {
               </h3>
               <p className="text-sm text-white/40 leading-relaxed max-w-xs">
                 Benzin, dizel veya elektrikli araç — anlık Türkiye fiyatlarıyla
-                kişi başı maliyeti hesapla. Her parti üyesi ne kadar ödeyecek?
+                rotanın tahmini maliyetini önceden gör. Yola çıkmadan planla.
               </p>
               <div className="mt-6 space-y-1.5 text-xs text-white/30">
                 <p>· Benzin &amp; dizel: EPDK pompa fiyatı</p>
@@ -71,7 +71,7 @@ export default function Footer() {
             </a>
             <p className="text-sm text-white/35 leading-relaxed mb-6">
               Sosyal sürüşü yeniden tanımlıyoruz. Arkadaşlarınla birlikte
-              yola çık, güzergahı paylaş, masrafları böl. Çok yakında.
+              yola çık, güzergahı koordine et, haritada birlikte ilerle. Çok yakında.
             </p>
             <a
               href="mailto:contact@minimath.dev"
