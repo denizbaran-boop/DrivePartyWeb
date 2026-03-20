@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Button from "@/components/ui/Button";
 import AppleIcon from "@/components/ui/AppleIcon";
+import FuelCalculatorCTA from "@/components/ui/FuelCalculatorCTA";
 
 export default function FinalCTA() {
   return (
@@ -62,11 +63,7 @@ export default function FinalCTA() {
             <AppleIcon className="w-5 h-5" />
             Yakında App Store&apos;da
           </Button>
-          <a href="#calculator">
-            <Button variant="secondary" size="lg" className="min-w-[200px]">
-              Maliyet Hesapla
-            </Button>
-          </a>
+          <FuelCalculatorCTA size="lg" className="min-w-[200px]" />
         </motion.div>
 
         {/* App store coming soon */}

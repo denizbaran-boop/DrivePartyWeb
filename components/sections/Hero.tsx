@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { MapPin, Users, Route, Zap } from "lucide-react";
 import Button from "@/components/ui/Button";
 import AppleIcon from "@/components/ui/AppleIcon";
+import FuelCalculatorCTA from "@/components/ui/FuelCalculatorCTA";
 
 const FLOAT_CARDS = [
   {
@@ -125,11 +126,7 @@ export default function Hero() {
                 <AppleIcon className="w-5 h-5" />
                 Yakında App Store&apos;da
               </Button>
-              <a href="#calculator">
-                <Button variant="secondary" size="lg">
-                  Maliyet Hesapla
-                </Button>
-              </a>
+              <FuelCalculatorCTA size="lg" />
             </motion.div>
 
             {/* Pre-launch pillars */}

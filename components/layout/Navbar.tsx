@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronDown, MapPin, Calculator } from "lucide-react";
+import { Menu, X, ChevronDown, MapPin, Calculator, ExternalLink } from "lucide-react";
 import Button from "@/components/ui/Button";
-import TripCalculator from "@/components/ui/TripCalculator";
+import FuelCalculatorCTA from "@/components/ui/FuelCalculatorCTA";
 import AppleIcon from "@/components/ui/AppleIcon";
 
 const NAV_LINKS = [
@@ -26,7 +26,7 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Close calc on outside click
+  // Close calc panel on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (calcRef.current && !calcRef.current.contains(e.target as Node)) {
@@ -69,7 +69,7 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Mini calculator trigger — desktop */}
+        {/* Fuel calculator trigger — desktop */}
         <div className="hidden xl:block relative ml-auto" ref={calcRef}>
           <button
             onClick={() => setCalcOpen((v) => !v)}
@@ -80,7 +80,7 @@ export default function Navbar() {
             }`}
           >
             <Calculator className="w-4 h-4" />
-            Maliyet Hesapla
+            Yakıt Hesapla
             <ChevronDown
               className={`w-3.5 h-3.5 transition-transform duration-200 ${calcOpen ? "rotate-180" : ""}`}
             />
@@ -93,13 +93,21 @@ export default function Navbar() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 8, scale: 0.96 }}
                 transition={{ duration: 0.18, ease: "easeOut" }}
-                className="absolute right-0 top-full mt-3 w-[480px] rounded-3xl border border-white/12 bg-[#0e0e1a]/90 backdrop-blur-2xl shadow-2xl shadow-black/50 p-5 z-50"
+                className="absolute right-0 top-full mt-3 w-[440px] rounded-3xl border border-white/12 bg-[#0e0e1a]/90 backdrop-blur-2xl shadow-2xl shadow-black/50 p-5 z-50"
               >
-                <div className="flex items-center gap-2 mb-4">
-                  <Calculator className="w-4 h-4 text-brand-400" />
-                  <span className="text-sm font-bold text-white">Hızlı Maliyet Hesaplayıcı</span>
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-brand-500/15 border border-brand-500/25 flex items-center justify-center flex-shrink-0">
+                    <ExternalLink className="w-5 h-5 text-brand-400" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-bold text-white">Yakıt Hesaplayıcı</p>
+                    <p className="text-xs text-white/45 mt-1 leading-relaxed">
+                      Eski DriveParty içi hesaplama kaldırıldı. Yakıt hesaplamayı yeni sekmede
+                      yolculukmaliyetim.com üzerinden açabilirsin.
+                    </p>
+                  </div>
                 </div>
-                <TripCalculator compact={false} />
+                <FuelCalculatorCTA size="md" className="mt-4 w-full" />
               </motion.div>
             )}
           </AnimatePresence>
@@ -107,9 +115,7 @@ export default function Navbar() {
 
         {/* CTAs */}
         <div className="hidden lg:flex items-center gap-2 ml-4 xl:ml-2">
-          <a href="#calculator">
-            <Button variant="secondary" size="sm">Maliyet Hesapla</Button>
-          </a>
+          <FuelCalculatorCTA size="sm" />
           <Button variant="primary" size="sm">
             <AppleIcon className="w-4 h-4" />
             Yakında
@@ -149,22 +155,20 @@ export default function Navbar() {
                   </a>
                 ))}
               </nav>
-              <div className="border-t border-white/8 pt-4">
-                <p className="text-xs font-bold text-white/40 uppercase tracking-wider mb-3">
-                  Hızlı Hesaplayıcı
+              <div className="border-t border-white/8 pt-4 rounded-2xl bg-white/4 border border-white/10 p-4">
+                <p className="text-xs font-bold text-white/40 uppercase tracking-wider mb-2">
+                  Yakıt Hesapla
                 </p>
-                <TripCalculator compact />
+                <p className="text-xs text-white/45 leading-relaxed mb-3">
+                  Yakıt hesaplama aracı yeni sekmede açılır.
+                </p>
+                <FuelCalculatorCTA className="w-full" />
               </div>
               <div className="flex flex-col gap-2 pt-2">
                 <Button variant="primary" className="w-full">
                   <AppleIcon className="w-4 h-4" />
                   Yakında App Store&apos;da
                 </Button>
-                <a href="#calculator" className="w-full" onClick={() => setMobileOpen(false)}>
-                  <Button variant="secondary" className="w-full">
-                    Maliyet Hesapla
-                  </Button>
-                </a>
               </div>
             </div>
           </motion.div>

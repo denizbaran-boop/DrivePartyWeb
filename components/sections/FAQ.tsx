@@ -10,20 +10,20 @@ const FAQS = [
     a: "Drive Party, arkadaşlarınızla grup sürüşleri organize etmenizi sağlayan sosyal bir sürüş uygulamasıdır. Parti oluşturabilir, üyeleri haritada takip edebilir ve ortak rotada birlikte ilerleyebilirsiniz. Herkes kendi aracını sürer, ama hepiniz senkronize yolculuk yaparsınız.",
   },
   {
-    q: "Yolculuk maliyet hesaplayıcısı nasıl çalışır?",
-    a: "Hesaplayıcı, Türkiye'deki güncel benzin, dizel ve elektrik fiyatlarını otomatik olarak çekerek 'mesafe × tüketim × birim fiyat' formülüyle tahmini toplam maliyeti hesaplar. Yola çıkmadan önce rotanın ne kadara mal olacağını önceden görebilirsiniz.",
+    q: "Yakıt hesaplama nerede yapılıyor?",
+    a: "Drive Party içindeki eski yakıt hesaplayıcı kaldırıldı. Yakıt hesaplama butonları sizi doğrudan yolculukmaliyetim.com sitesine yönlendirir ve hesaplama yeni sekmede açılır.",
   },
   {
-    q: "Kullanılan fiyatlar nereden geliyor?",
-    a: "Benzin ve dizel fiyatları EPDK (Enerji Piyasası Düzenleme Kurumu) verilerinden otomatik güncellenir. Elektrik fiyatları için ev şarjında TEDAŞ tarifesi, halka açık şarjda Türkiye'deki şarj ağlarının ortalama fiyatları kullanılır.",
+    q: "Drive Party içinde yakıt fiyatı gösteriliyor mu?",
+    a: "Hayır. Drive Party artık yakıt fiyatı çekmez ve in-site fiyat metrikleri göstermez. Yakıt hesaplama için yönlendirme bağlantısı kullanılır.",
   },
   {
     q: "Hesaplayıcı ne için kullanılır?",
-    a: "Hesaplayıcı kişisel bir planlama aracıdır. Yola çıkmadan önce yaklaşık yakıt maliyetini görmek, araç tüketimine göre bütçe planlamak ve farklı yakıt türlerini karşılaştırmak için kullanabilirsiniz.",
+    a: "Yakıt hesaplama bağlantısı, rota öncesi yaklaşık maliyet planlaması yapmak isteyen kullanıcıları harici hesaplama aracına yönlendirmek için sunulur.",
   },
   {
     q: "Elektrikli araç desteği var mı?",
-    a: "Evet. Yakıt türü olarak 'Elektrik' seçtiğinizde tüketim kWh/100 km cinsinden girilir. Evde şarj ve halka açık şarj istasyonu olmak üzere iki ayrı fiyat modu mevcuttur.",
+    a: "Evet. Yakıt türü seçenekleri ve hesaplama detayları, yönlendirilen harici hesaplama aracında sunulur.",
   },
   {
     q: "Konum paylaşımım gizli mi?",

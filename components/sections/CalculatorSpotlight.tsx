@@ -1,9 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Calculator, TrendingDown, Sparkles } from "lucide-react";
-import TripCalculator from "@/components/ui/TripCalculator";
+import { Calculator, ExternalLink, Sparkles } from "lucide-react";
 import GlassCard from "@/components/ui/GlassCard";
+import FuelCalculatorCTA from "@/components/ui/FuelCalculatorCTA";
 
 export default function CalculatorSpotlight() {
   return (
@@ -24,16 +24,16 @@ export default function CalculatorSpotlight() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand-500/30 bg-brand-500/10 text-brand-300 text-sm font-semibold mb-6">
             <Sparkles className="w-4 h-4" />
-            Canlı Fiyatlarla Hesapla
+            Hızlı Yakıt Hesabı
           </div>
           <h2 className="text-4xl sm:text-5xl font-extrabold text-white mb-5 tracking-tight">
-            Yolculuğunuzun maliyeti
+            Yakıt maliyet hesabını
             <br />
-            <span className="text-gradient">gerçek zamanlı.</span>
+            <span className="text-gradient">tek tıkla aç.</span>
           </h2>
           <p className="text-lg text-white/40 max-w-2xl mx-auto leading-relaxed">
-            Benzin, dizel ya da elektrikli — Türkiye&apos;nin güncel pompa ve tarife fiyatlarıyla
-            rotanın tahmini maliyetini anında gör. Yola çıkmadan önce planla.
+            DriveParty içinde hesaplama yerine, özel hesaplama ekranına yönlendiriyoruz.
+            Yakıt hesaplama için dış araçta devam edebilirsin.
           </p>
         </motion.div>
 
@@ -51,16 +51,23 @@ export default function CalculatorSpotlight() {
                 <Calculator className="w-5 h-5 text-brand-400" />
               </div>
               <div>
-                <h3 className="font-bold text-white text-base">Yolculuk Maliyet Hesaplayıcı</h3>
-                <p className="text-xs text-white/40">Türkiye güncel pompa fiyatları</p>
+                <h3 className="font-bold text-white text-base">Yakıt Maliyet Hesaplayıcı</h3>
+                <p className="text-xs text-white/40">Harici hesaplama aracına yönlendirme</p>
               </div>
-              <div className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-                <TrendingDown className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-xs font-semibold text-emerald-400">Canlı</span>
+              <div className="ml-auto flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10">
+                <ExternalLink className="w-3.5 h-3.5 text-white/60" />
+                <span className="text-xs font-semibold text-white/60">Yeni Sekme</span>
               </div>
             </div>
 
-            <TripCalculator compact={false} />
+            <div className="rounded-2xl border border-white/10 bg-white/4 p-6 sm:p-8 text-center">
+              <p className="text-sm text-white/45 leading-relaxed max-w-2xl mx-auto">
+                Yakıt hesaplama deneyimi artık{" "}
+                <span className="text-white/75 font-semibold">yolculukmaliyetim.com</span> üzerinde.
+                Aşağıdaki butona tıklayarak yeni sekmede devam edebilirsin.
+              </p>
+              <FuelCalculatorCTA size="lg" className="mt-6 min-w-[220px]" />
+            </div>
           </GlassCard>
         </motion.div>
 
@@ -74,16 +81,16 @@ export default function CalculatorSpotlight() {
         >
           {[
             {
-              title: "Güncel Pompa Fiyatları",
-              desc: "EPDK verilerinden otomatik güncellenir",
+              title: "Tek Tık Yönlendirme",
+              desc: "Hesaplama ekranı yeni sekmede açılır",
             },
             {
-              title: "Elektrikli Araç Desteği",
-              desc: "Ev şarjı ve halka açık şarj istasyonu fiyatları",
+              title: "Aynı Akış",
+              desc: "DriveParty içindeki yakıt butonları aktif kalır",
             },
             {
-              title: "Tahmini Hesaplama",
-              desc: "Yaklaşık rota maliyetini önceden gör",
+              title: "Temiz Arayüz",
+              desc: "Eski in-site yakıt hesaplama alanı kaldırıldı",
             },
           ].map((item, i) => (
             <div key={i} className="text-center p-4 rounded-2xl bg-white/3 border border-white/6">

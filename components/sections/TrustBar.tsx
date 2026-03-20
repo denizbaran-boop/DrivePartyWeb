@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 const BENEFITS = [
   { label: "Sosyal sürüş deneyimi", sub: "Arkadaşlarınla birlikte yola çık" },
   { label: "Gizlilik öncelikli tasarım", sub: "Konum yalnızca parti üyeleriyle paylaşılır" },
-  { label: "Akıllı maliyet hesabı", sub: "Canlı yakıt fiyatlarıyla anlık hesaplama" },
+  { label: "Akıllı maliyet planlama", sub: "Yakıt hesaplama aracı için hızlı yönlendirme" },
   { label: "Gerçek zamanlı koordinasyon", sub: "Haritada birbirinizi görün, birlikte varın" },
 ];
 
